@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "xontrib-iterm2"
-version = "0.0.1"
+version = "0.0.2"
 description = "iTerm2 shell integration for Xonsh shell."
 authors = ["Noortheen Raja NJ <jnoortheen@gmail.com>"]
 
