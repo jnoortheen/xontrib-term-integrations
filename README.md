@@ -1,5 +1,6 @@
-# Powerline3
-[iTerm2]() Shell integration for Xonsh shell. 
+# iTerm2 Shell Integration
+[iTerm2](https://iterm2.com/index.html) 
+[Shell integration](https://iterm2.com/documentation-escape-codes.html) for Xonsh shell. 
 
 
 ## Installation
