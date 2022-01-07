@@ -19,20 +19,32 @@ class ShellIntegration:
         return prefix + prompt + suffix
 
 
+class Codes:
+    # https://iterm2.com/documentation-escape-codes.html equivalents
+    ESC = "\x1b"
+    ST = "\x07"
+    OSC = ESC + "]"  # \x5d
+    CSI = ESC + "["
+
+
 def ansi_esc(code: str):
     return "\001" + code + "\002"
 
 
-def iterm2_esc(code):
-    return f"\x1b\x5d133;{code}\007"
+def term_mark(code):
+    return f"{Codes.OSC}133;{code}{Codes.ST}"
+
+
+def term_osc_cmd(code):
+    return f"{Codes.OSC}1337;{code}{Codes.ST}"
 
 
 def form_iterm2_prompt_prefix():
-    return iterm2_esc(f"A")
+    return term_mark(f"A")
 
 
 def form_iterm2_prompt_suffix():
-    return iterm2_esc(f"B")
+    return term_mark(f"B")
 
 
 def write_to_out(code):
@@ -41,11 +53,11 @@ def write_to_out(code):
 
 
 def write_iterm2_output_prefix():
-    return write_to_out(iterm2_esc(f"C"))
+    return write_to_out(term_mark(f"C"))
 
 
 def write_iterm2_status(status):
-    return write_to_out(iterm2_esc(f"D;{status}"))
+    return write_to_out(term_mark(f"D;{status}"))
 
 
 @XSH.builtins.events.on_precommand
@@ -58,6 +70,24 @@ def iterm_precmd(**_):
 @XSH.builtins.events.on_postcommand
 def iterm_postcmd(rtn=0, **_):
     write_iterm2_status(rtn)
+
+
+@XSH.builtins.events.on_chdir
+def onchdir(olddir, newdir, **_):
+    # OSC 1337 ; CurrentDir=[current directory] ST
+    write_to_out(term_osc_cmd(f"CurrentDir={newdir}"))
+
+
+@XSH.builtins.events.on_post_init
+def onpostinit(**__):
+    # OSC 1337 ; ShellIntegrationVersion=[Pn] ; [Ps] ST
+    write_to_out(term_osc_cmd(f"ShellIntegrationVersion=15;shell=xonsh"))
+
+    env = XSH.env or {}
+    user = env.get("USER")
+    host = env.get("HOSTNAME")
+    if user and host:
+        write_to_out(term_osc_cmd(f"RemoteHost={user}@{host}"))
 
 
 XSH.env["PROMPT"] = ShellIntegration(XSH.env)
