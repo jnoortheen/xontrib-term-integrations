@@ -1,0 +1,45 @@
+[tool.poetry]
+name = "xontrib-iterm2"
+version = "0.0.1"
+description = "iTerm2 shell integration for Xonsh shell."
+authors = ["Noortheen Raja NJ <jnoortheen@gmail.com>"]
+
+license = "MIT"
+readme = "README.md"
+
+repository = "https://github.com/jnoortheen/xontrib-iterm2"
+keywords = ['xontrib', 'xonsh']
+classifiers = [
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Natural Language :: English",
+    "Operating System :: OS Independent",
+    "Topic :: System :: Shells",
+    "Topic :: System :: System Shells",
+    "Topic :: Terminals",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+]
+
+
+packages = [
+    { include = "xontrib" },
+]
+
+[tool.poetry.urls]
+Documentation = "https://github.com/jnoortheen/xontrib-iterm2/blob/master/README.md"
+Code = "https://github.com/jnoortheen/xontrib-iterm2"
+"Issue tracker" = "https://github.com/jnoortheen/xontrib-iterm2/issues"
+
+
+[tool.poetry.dependencies]
+python = ">=3.8"
+xonsh = ">=0.11.0"
+
+[tool.poetry.dev-dependencies]
+pytest = "*"
+black = { version = "*", allow-prereleases = true }
+
+[build-system]
+requires = ["poetry>=0.12"]
+build-backend = "poetry.masonry.api"
