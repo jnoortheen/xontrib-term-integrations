@@ -1,8 +1,7 @@
 import sys
 from xonsh.built_ins import XSH
 from xonsh.environ import Env
-
-ITERM2_PREEXEC = "\033]133;C;\007"
+from .utils import Codes
 
 
 class ShellIntegration:
@@ -14,17 +13,9 @@ class ShellIntegration:
         prompt = self.old_prompt() if callable(self.old_prompt) else self.old_prompt
         prefix, suffix = [
             ansi_esc(form())
-            for form in [form_iterm2_prompt_prefix, form_iterm2_prompt_suffix]
+            for form in [form_term_prompt_prefix, form_term_prompt_suffix]
         ]
         return prefix + prompt + suffix
-
-
-class Codes:
-    # https://iterm2.com/documentation-escape-codes.html equivalents
-    ESC = "\x1b"
-    ST = "\x07"
-    OSC = ESC + "]"  # \x5d
-    CSI = ESC + "["
 
 
 def ansi_esc(code: str):
@@ -39,11 +30,11 @@ def term_osc_cmd(code):
     return f"{Codes.OSC}1337;{code}{Codes.ST}"
 
 
-def form_iterm2_prompt_prefix():
+def form_term_prompt_prefix():
     return term_mark(f"A")
 
 
-def form_iterm2_prompt_suffix():
+def form_term_prompt_suffix():
     return term_mark(f"B")
 
 

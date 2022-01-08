@@ -1,13 +1,13 @@
 [tool.poetry]
-name = "xontrib-iterm2"
-version = "0.0.2"
-description = "iTerm2 shell integration for Xonsh shell."
+name = "xontrib-term-integrations"
+version = "0.1.0"
+description = "Support shell integration of terminal programs iTerm2, Kitty..."
 authors = ["Noortheen Raja NJ <jnoortheen@gmail.com>"]
 
 license = "MIT"
 readme = "README.md"
 
-repository = "https://github.com/jnoortheen/xontrib-iterm2"
+repository = "https://github.com/jnoortheen/xontrib-term-integrations"
 keywords = ['xontrib', 'xonsh']
 classifiers = [
     "Intended Audience :: Developers",
@@ -24,12 +24,13 @@ classifiers = [
 
 packages = [
     { include = "xontrib" },
+    { include = "xontrib_term_integrations" },
 ]
 
 [tool.poetry.urls]
-Documentation = "https://github.com/jnoortheen/xontrib-iterm2/blob/master/README.md"
-Code = "https://github.com/jnoortheen/xontrib-iterm2"
-"Issue tracker" = "https://github.com/jnoortheen/xontrib-iterm2/issues"
+Documentation = "https://github.com/jnoortheen/xontrib-term-integrations/blob/master/README.md"
+Code = "https://github.com/jnoortheen/xontrib-term-integrations"
+"Issue tracker" = "https://github.com/jnoortheen/xontrib-term-integrations/issues"
 
 
 [tool.poetry.dependencies]
