@@ -1,6 +1,7 @@
 from xonsh.built_ins import XSH
+from xonsh.completers.completer import add_one_completer
 
-from . import utils
+from . import kitty_completions, utils
 
 
 @XSH.builtins.events.on_precommand
@@ -27,9 +28,13 @@ def onpostinit(**__):
     utils.write_osc_user_host(env)
 
 
-XSH.env["PROMPT"] = utils.ShellIntegrationPrompt(XSH.env)
+def ps2_multiline_prompt():
+    """a callable that prints out OSC tokens as well"""
+    utils.write_term_mark("A;k=s")
+    return "."
 
-# todo:
-#  1. PS2 marker
-#  2. kitty completions wrapper
-#
+
+XSH.env["PROMPT"] = utils.ShellIntegrationPrompt(XSH.env)
+XSH.env["MULTILINE_PROMPT"] = ps2_multiline_prompt
+
+add_one_completer("kitty", kitty_completions.xonsh_complete, loc="<import")

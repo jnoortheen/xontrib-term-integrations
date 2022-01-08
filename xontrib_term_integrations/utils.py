@@ -30,11 +30,11 @@ def ansi_esc(code: str):
 
 
 def term_mark(code):
-    return "{Codes.OSC}133;{code}{Codes.ST}"
+    return f"{Codes.OSC}133;{code}{Codes.ST}"
 
 
 def term_osc_cmd(code):
-    return "{Codes.OSC}1337;{code}{Codes.ST}"
+    return f"{Codes.OSC}1337;{code}{Codes.ST}"
 
 
 def form_term_prompt_prefix():
