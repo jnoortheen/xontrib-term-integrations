@@ -6,7 +6,7 @@ The following terminal emulators are supported
 - [kitty](https://sw.kovidgoyal.net/kitty/shell-integration/)
   - Please follow [the manual integration guide](https://sw.kovidgoyal.net/kitty/shell-integration/#manual-shell-integration)
 
-**Note**: If the identifying current terminal fails, `iTerm2` hooks are loaded.
+**Note**: If identifying current terminal fails, `iTerm2` hooks are loaded.
 
 PRs welcome on improving the support to more terminal programs :)
 
