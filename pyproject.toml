@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "xontrib-term-integrations"
-version = "0.1.1"
+version = "0.1.2"
 description = "Support shell integration of terminal programs iTerm2, Kitty..."
 authors = ["Noortheen Raja NJ <jnoortheen@gmail.com>"]
 
@@ -35,7 +35,7 @@ Code = "https://github.com/jnoortheen/xontrib-term-integrations"
 
 [tool.poetry.dependencies]
 python = ">=3.8"
-xonsh = ">=0.11.0"
+xonsh = ">=0.12.0"
 
 [tool.poetry.dev-dependencies]
 pytest = "*"
