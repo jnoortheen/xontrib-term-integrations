@@ -19,7 +19,6 @@ xpip install xontrib-term-integrations
 # or: xpip install -U git+https://github.com/jnoortheen/xontrib-term-integrations
 ```
 
-**Note**: [This PR](https://github.com/xonsh/xonsh/pull/4629) is needed for this to work. As of today(Mar 3, 2022), it is not released yet. So you have to install xonsh from the github like `pipx install git+https://gitlab.com/xonsh/xonsh/`.
 
 ## Usage
 
