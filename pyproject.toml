@@ -1,46 +1,36 @@
-[tool.poetry]
+[project.optional-dependencies]
+dev = [
+    "pytest",
+    "black",
+]
+
+[tool.pdm.build]
+includes = ["xontrib", "xontrib_term_integrations"]
+[build-system]
+requires = ["pdm-pep517>=1.0.0"]
+build-backend = "pdm.pep517.api"
+
+
+[project]
+# PEP 621 project metadata
+# See https://www.python.org/dev/peps/pep-0621/
+authors = [
+    {name = "Noortheen Raja NJ", email = "jnoortheen@gmail.com"},
+]
+license = {text = "MIT"}
+requires-python = ">=3.8"
+dependencies = [
+    "xonsh>=0.12.0",
+]
 name = "xontrib-term-integrations"
 version = "0.1.3"
 description = "Support shell integration of terminal programs iTerm2, Kitty..."
-authors = ["Noortheen Raja NJ <jnoortheen@gmail.com>"]
-
-license = "MIT"
 readme = "README.md"
+keywords = ["xontrib", "xonsh"]
+classifiers = ["Intended Audience :: Developers", "License :: OSI Approved :: MIT License", "Natural Language :: English", "Operating System :: OS Independent", "Topic :: System :: Shells", "Topic :: System :: System Shells", "Topic :: Terminals", "Programming Language :: Python", "Programming Language :: Python :: 3"]
 
-repository = "https://github.com/jnoortheen/xontrib-term-integrations"
-keywords = ['xontrib', 'xonsh']
-classifiers = [
-    "Intended Audience :: Developers",
-    "License :: OSI Approved :: MIT License",
-    "Natural Language :: English",
-    "Operating System :: OS Independent",
-    "Topic :: System :: Shells",
-    "Topic :: System :: System Shells",
-    "Topic :: Terminals",
-    "Programming Language :: Python",
-    "Programming Language :: Python :: 3",
-]
-
-
-packages = [
-    { include = "xontrib" },
-    { include = "xontrib_term_integrations" },
-]
-
-[tool.poetry.urls]
+[project.urls]
 Documentation = "https://github.com/jnoortheen/xontrib-term-integrations/blob/master/README.md"
 Code = "https://github.com/jnoortheen/xontrib-term-integrations"
 "Issue tracker" = "https://github.com/jnoortheen/xontrib-term-integrations/issues"
-
-
-[tool.poetry.dependencies]
-python = ">=3.8"
-xonsh = ">=0.12.0"
-
-[tool.poetry.dev-dependencies]
-pytest = "*"
-black = { version = "*", allow-prereleases = true }
-
-[build-system]
-requires = ["poetry>=0.12"]
-build-backend = "poetry.masonry.api"
+repository = "https://github.com/jnoortheen/xontrib-term-integrations"
