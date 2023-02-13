@@ -1,7 +1,10 @@
 import sys
+import base64
 
 from xonsh.environ import Env
+from xonsh.built_ins import XSH
 
+envx = XSH.env or {}
 
 class Codes:
     # https://iterm2.com/documentation-escape-codes.html equivalents
@@ -104,3 +107,15 @@ def write_osc_user_host(env):
     host = env.get("HOSTNAME")
     if user and host:
         write_osc_cmd(f"RemoteHost={user}@{host}")
+
+def set_user_var(var, val): # emit an OSC 1337 sequence to set a user var associated with the current terminal pane
+    val_b   = val.encode('ascii')
+    val_b64 = base64.b64encode(val_b)
+    val_s64 = val_b64.decode('ascii')
+    user_var = f"SetUserVar={var}={val_s64}"
+    if envx.get("TMUX", ''):
+        # github.com/tmux/tmux/wiki/FAQ#what-is-the-passthrough-escape-sequence-and-how-do-i-use-it
+        # Add "set -g allow-passthrough on" to your tmux.conf
+        write_tmux_cmd(term_osc_cmd(user_var))
+    else:
+        write_osc_cmd(user_var)
