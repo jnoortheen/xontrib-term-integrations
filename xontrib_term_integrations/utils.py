@@ -10,6 +10,7 @@ class Codes:
     ST  = ESC + "\\" # 0x9C String Terminator: terminates strings in other controls
     OSC = ESC + "]"  # \x5d Operating System Command
     CSI = ESC + "["  #      Control Sequence Introducer
+    DCS = ESC + "P"  # 0x90 Device Control String (terminated by ST): User-Defined Keys; get/set Termcap/Terminfo data
 
 class ShellIntegrationPrompt:
     def __init__(self, env: "Env"):
@@ -37,6 +38,20 @@ def term_osc_cmd(code):
     return f"{Codes.OSC}1337;{code}{Codes.BEL}"
 
 
+def term_dcs_cmd(code):
+    return f"{Codes.DCS}{code}{Codes.ST}"
+
+
+def term_tmux_cmd(code):
+    # github.com/tmux/tmux/wiki/FAQ#what-is-the-passthrough-escape-sequence-and-how-do-i-use-it
+    # ESC in the wrapped sequence must be doubled
+    return term_dcs_cmd(esc_esc(code))
+
+
+def esc_esc(code): # doubles ESC (or escapes ESC with another ESC)
+    return code.replace(Codes.ESC, Codes.ESC+Codes.ESC)
+
+
 def form_term_prompt_prefix():
     return term_mark("A")
 
@@ -51,6 +66,14 @@ def write_term_mark(code):
 
 def write_osc_cmd(code):
     return write_to_out(term_osc_cmd(code))
+
+
+def write_dcs_cmd(code):
+    return write_to_out(term_dcs_cmd(code))
+
+
+def write_tmux_cmd(code):
+    return write_to_out(term_tmux_cmd(code))
 
 
 def write_osc_output_prefix():
