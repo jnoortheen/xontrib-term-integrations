@@ -5,11 +5,11 @@ from xonsh.environ import Env
 
 class Codes:
     # https://iterm2.com/documentation-escape-codes.html equivalents
-    ESC = "\x1b"
-    ST = "\x07"
-    OSC = ESC + "]"  # \x5d
-    CSI = ESC + "["
-
+    ESC = "\x1b"     # Escape, starts all the escape sequences
+    BEL = "\x07"     # Bell
+    ST  = ESC + "\\" # 0x9C String Terminator: terminates strings in other controls
+    OSC = ESC + "]"  # \x5d Operating System Command
+    CSI = ESC + "["  #      Control Sequence Introducer
 
 class ShellIntegrationPrompt:
     def __init__(self, env: "Env"):
@@ -30,11 +30,11 @@ def ansi_esc(code: str):
 
 
 def term_mark(code):
-    return f"{Codes.OSC}133;{code}{Codes.ST}"
+    return f"{Codes.OSC}133;{code}{Codes.BEL}"
 
 
 def term_osc_cmd(code):
-    return f"{Codes.OSC}1337;{code}{Codes.ST}"
+    return f"{Codes.OSC}1337;{code}{Codes.BEL}"
 
 
 def form_term_prompt_prefix():
