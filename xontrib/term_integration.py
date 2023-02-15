@@ -22,6 +22,7 @@ if env.get("XONSH_INTERACTIVE", False):
                  ("wezterm" in TERM        ) or\
                  ("wezterm" in TERM_PROGRAM):
                 import xontrib_term_integrations.wezterm # noqa
+                #todo: fails in a root shell https://github.com/wez/wezterm/issues/3114
             else:
                 # fallback
                 # if "iTerm" in os.getenv("TERM_PROGRAM", ""):
