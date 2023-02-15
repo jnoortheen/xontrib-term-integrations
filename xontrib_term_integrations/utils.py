@@ -16,16 +16,39 @@ class Codes:
     DCS = ESC + "P"  # 0x90 Device Control String (terminated by ST): User-Defined Keys; get/set Termcap/Terminfo data
 
 class ShellIntegrationPrompt:
-    def __init__(self, env: "Env"):
+    def __init__(self, env: "Env", prompt_name="PROMPT", extend=False, ext_opt={}):
         self.env = env
-        self.old_prompt = env["PROMPT"]
+        self.extend = extend
+        self.ext_opt = ext_opt
+        self.prompt_name = prompt_name
+        self.old_prompt = env[prompt_name]
 
     def __call__(self, **_):
         prompt = self.old_prompt() if callable(self.old_prompt) else self.old_prompt
-        prefix, suffix = [
-            ansi_esc(form())
-            for form in [form_term_prompt_prefix, form_term_prompt_suffix]
-        ]
+        if not self.extend:
+            prefix, suffix = [
+                form()
+                for form in [form_term_prompt_prefix, form_term_prompt_suffix]
+            ]
+        else:
+            if   self.prompt_name == "PROMPT":
+                prefix = SemanticPrompt.line_new_cmd_new(self.ext_opt) + \
+                         SemanticPrompt.prompt_start_primary()
+                suffix = SemanticPrompt.prompt_end_input_start()
+            elif self.prompt_name == "RIGHT_PROMPT": #todo: bugs https://github.com/wez/wezterm/issues/3115
+                prefix = SemanticPrompt.prompt_start_right()
+                suffix = '\n' # spec mandates ending witn a ␤?
+            elif self.prompt_name == "BOTTOM_TOOLBAR":
+                prefix = SemanticPrompt.prompt_start_secondary()
+                suffix = ''  # ... ␤ bugs and adds and extra empty line
+            elif self.prompt_name == "MULTILINE_PROMPT": # todo: bugs https://github.com/xonsh/xonsh/issues/5058
+                prefix = SemanticPrompt.prompt_start_continue()
+                prefix = ''
+                suffix = ''
+            else:
+                return prompt
+        prefix = ansi_esc(prefix) if prefix else '' # don't escape empty pre/suf-fix (breaks multiline prompts)
+        suffix = ansi_esc(suffix) if suffix else ''
         return prefix + prompt + suffix
 
 
