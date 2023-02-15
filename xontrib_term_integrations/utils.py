@@ -60,10 +60,14 @@ def esc_esc(code): # doubles ESC (or escapes ESC with another ESC)
 
 
 def form_term_prompt_prefix():
+    # FTCS_PROMPT        Sent just before start of shell prompt
+    # OSC 133 ; A ST
     return term_mark("A")
 
 
 def form_term_prompt_suffix():
+    # FTCS_COMMAND_START Sent just after end of shell prompt, before the user-entered command
+    # OSC 133 ; B ST
     return term_mark("B")
 
 
