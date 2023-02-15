@@ -29,6 +29,86 @@ class ShellIntegrationPrompt:
         return prefix + prompt + suffix
 
 
+class SemanticPrompt:
+    # Splits prompt into Input, Output, Prompt semantic zones with OSC 133 Escape sequence
+    # https://gitlab.freedesktop.org/Per_Bothner/specifications/blob/master/proposals/semantic-prompts.md
+
+    @staticmethod
+    def osc_cmd(prefix, opt):
+        opt_s = opt_dict_to_str(opt)
+        return f"{Codes.OSC}133;{prefix}{opt_s}{Codes.BEL}"
+
+    @staticmethod
+    def line_new():
+        # OSC "133;L\007"            Do a fresh-line: If the cursor is the initial column (left, assuming left-to-right writing), do nothing. Otherwise, do the equivalent of "\r\n"
+        return SemanticPrompt.osc_cmd('L', {})
+    @staticmethod
+    def line_new_cmd_new(opt={}):       # form_term_prompt_prefix, but with opt
+        # OSC "133;A" options "\007" First do a fresh-line. Then start a new command, and enter prompt mode
+        return SemanticPrompt.osc_cmd('A', opt)
+    @staticmethod
+    def line_new_cmd_new_kill_old(opt={}):
+        # OSC "133;N" options "\007" Same as OSC "133;A" but may first implicitly terminate a previous command
+        return SemanticPrompt.osc_cmd('N', opt)
+
+    @staticmethod
+    def prompt_start(opt={'k':'i'}):
+        # OSC "133;P" options "\007" Explicit start of prompt. Optional after an 'A' or 'N' command
+        # 'k' (kind) option specifies the type of prompt: ↓
+        return SemanticPrompt.osc_cmd('P', opt)
+    @staticmethod
+    def prompt_start_primary():
+        return SemanticPrompt.prompt_start({'k':'i'}) # 'i'nitial regular primary prompt (default)
+    @staticmethod
+    def prompt_start_right():
+        return SemanticPrompt.prompt_start({'k':'r'}) # 'r'ight-side
+    @staticmethod
+    def prompt_start_continue():
+        return SemanticPrompt.prompt_start({'k':'c'}) # 'c'ontinuation (can edit previous lines)
+    @staticmethod
+    def prompt_start_secondary():
+        return SemanticPrompt.prompt_start({'k':'s'}) # 's'econdary
+
+    @staticmethod
+    def prompt_end_input_start(opt={}): # form_term_prompt_suffix, but with opt
+        # OSC "133;B" options "\007" End of prompt and start of user input, terminated by a OSC "133;C" or another prompt (OSC "133;P").
+        return SemanticPrompt.osc_cmd('B', opt)
+    @staticmethod
+    def prompt_end_input_start_nl(opt={}):
+        # OSC "133;I" options "\007" End of prompt and start of user input, terminated by end-of-line
+        return SemanticPrompt.osc_cmd('I', opt)
+
+    @staticmethod
+    def input_end_output_start(opt={}): # write_osc_output_prefix, but with opt
+        # OSC "133;C" options "\007" End of input, and start of output
+        return SemanticPrompt.osc_cmd('C', opt)
+
+    @staticmethod
+    def cmd_end(opt={}):                # write_osc_cmd_status   , but with opt
+        # OSC "133;D" [";" exit-code _options ]"\007" End of current command
+        return SemanticPrompt.osc_cmd('D', opt)
+
+    # helper printer functions
+    @staticmethod
+    def write_input_end_output_start(opt={}):
+        write_to_out(SemanticPrompt.input_end_output_start(opt))
+    @staticmethod
+    def write_cmd_end(opt={}):
+        write_to_out(SemanticPrompt.cmd_end(opt))
+
+
+def opt_dict_to_str(opt):
+    # convert options dictionary to `options ::= (";" option)*`, where
+        # option is a simple string when dictionary value is 'None'
+        # option is a `named-option ::= option-name "=" value` otherwise (allows for named options with empty string values when dictionary value is '')
+    if not type(opt) == dict:
+        return ''
+    # return ";".join([str(k) + ('='+str(v) if not v == None else '') for k,v in opt.items()])
+    if (s := ";".join([str(k) + ('='+str(v) if not v == None else '') for k,v in opt.items()])):
+        return ';' + s
+    return ''
+
+
 def ansi_esc(code: str):
     return "\001" + code + "\002"
 
