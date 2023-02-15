@@ -4,6 +4,7 @@
 The following terminal emulators are supported
 - [iTerm2](https://iterm2.com/documentation-shell-integration.html)
 - [kitty](https://sw.kovidgoyal.net/kitty/shell-integration/)
+- [WezTerm](https://wezfurlong.org/wezterm/shell-integration.html) with CWD; Input, Output, and Prompt zones; and User Vars for tracking additional shell state
 
 **Note**: If identifying current terminal fails, `iTerm2` hooks are loaded.
 
