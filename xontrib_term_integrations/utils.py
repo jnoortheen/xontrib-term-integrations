@@ -41,6 +41,10 @@ def term_osc_cmd(code):
     return f"{Codes.OSC}1337;{code}{Codes.BEL}"
 
 
+def term_osc7_cmd(code):
+    return f"{Codes.OSC}7;{code}{Codes.ST}"
+
+
 def term_dcs_cmd(code):
     return f"{Codes.DCS}{code}{Codes.ST}"
 
@@ -69,6 +73,10 @@ def write_term_mark(code):
 
 def write_osc_cmd(code):
     return write_to_out(term_osc_cmd(code))
+
+
+def write_osc7_cmd(code):
+    return write_to_out(term_osc7_cmd(code))
 
 
 def write_dcs_cmd(code):
@@ -101,6 +109,11 @@ def write_osc_cwd(newdir):
     # OSC 1337 ; CurrentDir=[current directory] ST
     write_osc_cmd(f"CurrentDir={newdir}")
 
+
+def write_osc7_cwd(host, newdir):
+    # OSC 7 ; [Ps] ST
+    #         [Ps] is a file URL with a hostname and a path, like file://example.com/usr/bin
+    write_osc7_cmd(f"file://{host}{newdir}")
 
 def write_osc_user_host(env):
     user = env.get("USER")
