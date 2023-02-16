@@ -11,9 +11,9 @@
 # Set multiclick to select zones in WezTerm, then multiclick to see which areas select
 # Use MoveForwardZoneOfType/MoveBackwardZoneOfType key bindings
 
-import sys
 import os
 import subprocess
+import sys
 
 from xonsh.built_ins import XSH
 

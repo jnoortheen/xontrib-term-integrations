@@ -1,8 +1,9 @@
-import sys
 import base64
+import sys
+from typing import Optional
 
-from xonsh.environ import Env
 from xonsh.built_ins import XSH
+from xonsh.environ import Env
 
 envx = XSH.env or {}
 
@@ -19,19 +20,25 @@ class Codes:
 
 
 class ShellIntegrationPrompt:
-    def __init__(self, env: "Env", prompt_name="PROMPT", extend=False, ext_opt={}):
+    def __init__(
+        self,
+        env: "Env",
+        prompt_name="PROMPT",
+        extend=False,
+        ext_opt: Optional[dict] = None,
+    ):
         self.env = env
         self.extend = extend
-        self.ext_opt = ext_opt
+        self.ext_opt = ext_opt or {}
         self.prompt_name = prompt_name
         self.old_prompt = env[prompt_name]
 
     def __call__(self, **_):
         prompt = self.old_prompt() if callable(self.old_prompt) else self.old_prompt
         if not self.extend:
-            prefix, suffix = [
+            prefix, suffix = (
                 form() for form in [form_term_prompt_prefix, form_term_prompt_suffix]
-            ]
+            )
         else:
             if self.prompt_name == "PROMPT":
                 prefix = (
@@ -80,19 +87,22 @@ class SemanticPrompt:
         return SemanticPrompt.osc_cmd("L", {})
 
     @staticmethod
-    def line_new_cmd_new(opt={}):  # form_term_prompt_prefix, but with opt
+    def line_new_cmd_new(opt=None):  # form_term_prompt_prefix, but with opt
+        opt = opt or {}
         # OSC "133;A" options "\007" First do a fresh-line.
         # Then start a new command, and enter prompt mode
         return SemanticPrompt.osc_cmd("A", opt)
 
     @staticmethod
-    def line_new_cmd_new_kill_old(opt={}):
+    def line_new_cmd_new_kill_old(opt=None):
+        opt = opt or {}
         # OSC "133;N" options "\007" Same as OSC "133;A"
         # but may first implicitly terminate a previous command
         return SemanticPrompt.osc_cmd("N", opt)
 
     @staticmethod
-    def prompt_start(opt={"k": "i"}):
+    def prompt_start(opt=None):
+        opt = opt or {"k": "i"}
         # OSC "133;P" options "\007" Explicit start of prompt.
         # Optional after  'A' or 'N'
         # 'k' (kind) option specifies the type of prompt: ↓
@@ -119,36 +129,42 @@ class SemanticPrompt:
         return SemanticPrompt.prompt_start({"k": "s"})  # 's'econdary
 
     @staticmethod
-    def prompt_end_input_start(opt={}):
+    def prompt_end_input_start(opt=None):
+        opt = opt or {}
         # form_term_prompt_suffix, but with opt
         # OSC "133;B" options "\007" End of prompt and start of user input,
         # terminated by a OSC "133;C" or another prompt (OSC "133;P").
         return SemanticPrompt.osc_cmd("B", opt)
 
     @staticmethod
-    def prompt_end_input_start_nl(opt={}):
+    def prompt_end_input_start_nl(opt=None):
+        opt = opt or {}
         # OSC "133;I" options "\007" End of prompt and start of user input,
         # terminated by EOL
         return SemanticPrompt.osc_cmd("I", opt)
 
     @staticmethod
-    def input_end_output_start(opt={}):
+    def input_end_output_start(opt=None):
+        opt = opt or {}
         # write_osc_output_prefix, but with opt
         # OSC "133;C" options "\007" End of input, and start of output
         return SemanticPrompt.osc_cmd("C", opt)
 
     @staticmethod
-    def cmd_end(opt={}):  # write_osc_cmd_status   , but with opt
+    def cmd_end(opt=None):  # write_osc_cmd_status   , but with opt
+        opt = opt or {}
         # OSC "133;D" [";" exit-code _options ]"\007" End of current command
         return SemanticPrompt.osc_cmd("D", opt)
 
     # helper printer functions
     @staticmethod
-    def write_input_end_output_start(opt={}):
+    def write_input_end_output_start(opt=None):
+        opt = opt or {}
         write_to_out(SemanticPrompt.input_end_output_start(opt))
 
     @staticmethod
-    def write_cmd_end(opt={}):
+    def write_cmd_end(opt=None):
+        opt = opt or {}
         write_to_out(SemanticPrompt.cmd_end(opt))
 
 
