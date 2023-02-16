@@ -286,6 +286,8 @@ def set_user_var(
     var, val
 ):  # emit an OSC 1337 sequence to set a user var associated with the current
     # terminal pane
+    if not type(val) == str:
+        val = str(val)
     val_b = val.encode("ascii")
     val_b64 = base64.b64encode(val_b)
     val_s64 = val_b64.decode("ascii")
