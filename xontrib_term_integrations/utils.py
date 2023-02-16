@@ -6,14 +6,18 @@ from xonsh.built_ins import XSH
 
 envx = XSH.env or {}
 
+
 class Codes:
     # https://iterm2.com/documentation-escape-codes.html equivalents
-    ESC = "\x1b"     # Escape, starts all the escape sequences
-    BEL = "\x07"     # Bell
-    ST  = ESC + "\\" # 0x9C String Terminator: terminates strings in other controls
+    ESC = "\x1b"  # Escape, starts all the escape sequences
+    BEL = "\x07"  # Bell
+    ST = ESC + "\\"  # 0x9C String Terminator: terminates strings in other controls
     OSC = ESC + "]"  # \x5d Operating System Command
     CSI = ESC + "["  #      Control Sequence Introducer
-    DCS = ESC + "P"  # 0x90 Device Control String (terminated by ST): User-Defined Keys; get/set Termcap/Terminfo data
+    DCS = (
+        ESC + "P"
+    )  # 0x90 Device Control String (terminated by ST): User-Defined Keys; get/set Termcap/Terminfo data
+
 
 class ShellIntegrationPrompt:
     def __init__(self, env: "Env", prompt_name="PROMPT", extend=False, ext_opt={}):
@@ -27,28 +31,35 @@ class ShellIntegrationPrompt:
         prompt = self.old_prompt() if callable(self.old_prompt) else self.old_prompt
         if not self.extend:
             prefix, suffix = [
-                form()
-                for form in [form_term_prompt_prefix, form_term_prompt_suffix]
+                form() for form in [form_term_prompt_prefix, form_term_prompt_suffix]
             ]
         else:
-            if   self.prompt_name == "PROMPT":
-                prefix = SemanticPrompt.line_new_cmd_new(self.ext_opt) + \
-                         SemanticPrompt.prompt_start_primary()
+            if self.prompt_name == "PROMPT":
+                prefix = (
+                    SemanticPrompt.line_new_cmd_new(self.ext_opt)
+                    + SemanticPrompt.prompt_start_primary()
+                )
                 suffix = SemanticPrompt.prompt_end_input_start()
-            elif self.prompt_name == "RIGHT_PROMPT": #todo: bugs https://github.com/wez/wezterm/issues/3115
+            elif (
+                self.prompt_name == "RIGHT_PROMPT"
+            ):  # todo: bugs https://github.com/wez/wezterm/issues/3115
                 prefix = SemanticPrompt.prompt_start_right()
-                suffix = '\n' # spec mandates ending witn a ␤?
+                suffix = "\n"  # spec mandates ending witn a ␤?
             elif self.prompt_name == "BOTTOM_TOOLBAR":
                 prefix = SemanticPrompt.prompt_start_secondary()
-                suffix = ''  # ... ␤ bugs and adds and extra empty line
-            elif self.prompt_name == "MULTILINE_PROMPT": # todo: bugs https://github.com/xonsh/xonsh/issues/5058
+                suffix = ""  # ... ␤ bugs and adds and extra empty line
+            elif (
+                self.prompt_name == "MULTILINE_PROMPT"
+            ):  # todo: bugs https://github.com/xonsh/xonsh/issues/5058
                 prefix = SemanticPrompt.prompt_start_continue()
-                prefix = ''
-                suffix = ''
+                prefix = ""
+                suffix = ""
             else:
                 return prompt
-        prefix = ansi_esc(prefix) if prefix else '' # don't escape empty pre/suf-fix (breaks multiline prompts)
-        suffix = ansi_esc(suffix) if suffix else ''
+        prefix = (
+            ansi_esc(prefix) if prefix else ""
+        )  # don't escape empty pre/suf-fix (breaks multiline prompts)
+        suffix = ansi_esc(suffix) if suffix else ""
         return prefix + prompt + suffix
 
 
@@ -64,57 +75,69 @@ class SemanticPrompt:
     @staticmethod
     def line_new():
         # OSC "133;L\007"            Do a fresh-line: If the cursor is the initial column (left, assuming left-to-right writing), do nothing. Otherwise, do the equivalent of "\r\n"
-        return SemanticPrompt.osc_cmd('L', {})
+        return SemanticPrompt.osc_cmd("L", {})
+
     @staticmethod
-    def line_new_cmd_new(opt={}):       # form_term_prompt_prefix, but with opt
+    def line_new_cmd_new(opt={}):  # form_term_prompt_prefix, but with opt
         # OSC "133;A" options "\007" First do a fresh-line. Then start a new command, and enter prompt mode
-        return SemanticPrompt.osc_cmd('A', opt)
+        return SemanticPrompt.osc_cmd("A", opt)
+
     @staticmethod
     def line_new_cmd_new_kill_old(opt={}):
         # OSC "133;N" options "\007" Same as OSC "133;A" but may first implicitly terminate a previous command
-        return SemanticPrompt.osc_cmd('N', opt)
+        return SemanticPrompt.osc_cmd("N", opt)
 
     @staticmethod
-    def prompt_start(opt={'k':'i'}):
+    def prompt_start(opt={"k": "i"}):
         # OSC "133;P" options "\007" Explicit start of prompt. Optional after an 'A' or 'N' command
         # 'k' (kind) option specifies the type of prompt: ↓
-        return SemanticPrompt.osc_cmd('P', opt)
-    @staticmethod
-    def prompt_start_primary():
-        return SemanticPrompt.prompt_start({'k':'i'}) # 'i'nitial regular primary prompt (default)
-    @staticmethod
-    def prompt_start_right():
-        return SemanticPrompt.prompt_start({'k':'r'}) # 'r'ight-side
-    @staticmethod
-    def prompt_start_continue():
-        return SemanticPrompt.prompt_start({'k':'c'}) # 'c'ontinuation (can edit previous lines)
-    @staticmethod
-    def prompt_start_secondary():
-        return SemanticPrompt.prompt_start({'k':'s'}) # 's'econdary
+        return SemanticPrompt.osc_cmd("P", opt)
 
     @staticmethod
-    def prompt_end_input_start(opt={}): # form_term_prompt_suffix, but with opt
+    def prompt_start_primary():
+        return SemanticPrompt.prompt_start(
+            {"k": "i"}
+        )  # 'i'nitial regular primary prompt (default)
+
+    @staticmethod
+    def prompt_start_right():
+        return SemanticPrompt.prompt_start({"k": "r"})  # 'r'ight-side
+
+    @staticmethod
+    def prompt_start_continue():
+        return SemanticPrompt.prompt_start(
+            {"k": "c"}
+        )  # 'c'ontinuation (can edit previous lines)
+
+    @staticmethod
+    def prompt_start_secondary():
+        return SemanticPrompt.prompt_start({"k": "s"})  # 's'econdary
+
+    @staticmethod
+    def prompt_end_input_start(opt={}):  # form_term_prompt_suffix, but with opt
         # OSC "133;B" options "\007" End of prompt and start of user input, terminated by a OSC "133;C" or another prompt (OSC "133;P").
-        return SemanticPrompt.osc_cmd('B', opt)
+        return SemanticPrompt.osc_cmd("B", opt)
+
     @staticmethod
     def prompt_end_input_start_nl(opt={}):
         # OSC "133;I" options "\007" End of prompt and start of user input, terminated by end-of-line
-        return SemanticPrompt.osc_cmd('I', opt)
+        return SemanticPrompt.osc_cmd("I", opt)
 
     @staticmethod
-    def input_end_output_start(opt={}): # write_osc_output_prefix, but with opt
+    def input_end_output_start(opt={}):  # write_osc_output_prefix, but with opt
         # OSC "133;C" options "\007" End of input, and start of output
-        return SemanticPrompt.osc_cmd('C', opt)
+        return SemanticPrompt.osc_cmd("C", opt)
 
     @staticmethod
-    def cmd_end(opt={}):                # write_osc_cmd_status   , but with opt
+    def cmd_end(opt={}):  # write_osc_cmd_status   , but with opt
         # OSC "133;D" [";" exit-code _options ]"\007" End of current command
-        return SemanticPrompt.osc_cmd('D', opt)
+        return SemanticPrompt.osc_cmd("D", opt)
 
     # helper printer functions
     @staticmethod
     def write_input_end_output_start(opt={}):
         write_to_out(SemanticPrompt.input_end_output_start(opt))
+
     @staticmethod
     def write_cmd_end(opt={}):
         write_to_out(SemanticPrompt.cmd_end(opt))
@@ -122,14 +145,16 @@ class SemanticPrompt:
 
 def opt_dict_to_str(opt):
     # convert options dictionary to `options ::= (";" option)*`, where
-        # option is a simple string when dictionary value is 'None'
-        # option is a `named-option ::= option-name "=" value` otherwise (allows for named options with empty string values when dictionary value is '')
+    # option is a simple string when dictionary value is 'None'
+    # option is a `named-option ::= option-name "=" value` otherwise (allows for named options with empty string values when dictionary value is '')
     if not type(opt) == dict:
-        return ''
+        return ""
     # return ";".join([str(k) + ('='+str(v) if not v == None else '') for k,v in opt.items()])
-    if (s := ";".join([str(k) + ('='+str(v) if not v == None else '') for k,v in opt.items()])):
-        return ';' + s
-    return ''
+    if s := ";".join(
+        [str(k) + ("=" + str(v) if not v == None else "") for k, v in opt.items()]
+    ):
+        return ";" + s
+    return ""
 
 
 def ansi_esc(code: str):
@@ -158,8 +183,8 @@ def term_tmux_cmd(code):
     return term_dcs_cmd(esc_esc(code))
 
 
-def esc_esc(code): # doubles ESC (or escapes ESC with another ESC)
-    return code.replace(Codes.ESC, Codes.ESC+Codes.ESC)
+def esc_esc(code):  # doubles ESC (or escapes ESC with another ESC)
+    return code.replace(Codes.ESC, Codes.ESC + Codes.ESC)
 
 
 def form_term_prompt_prefix():
@@ -222,18 +247,22 @@ def write_osc7_cwd(host, newdir):
     #         [Ps] is a file URL with a hostname and a path, like file://example.com/usr/bin
     write_osc7_cmd(f"file://{host}{newdir}")
 
+
 def write_osc_user_host(env):
     user = env.get("USER")
     host = env.get("HOSTNAME")
     if user and host:
         write_osc_cmd(f"RemoteHost={user}@{host}")
 
-def set_user_var(var, val): # emit an OSC 1337 sequence to set a user var associated with the current terminal pane
-    val_b   = val.encode('ascii')
+
+def set_user_var(
+    var, val
+):  # emit an OSC 1337 sequence to set a user var associated with the current terminal pane
+    val_b = val.encode("ascii")
     val_b64 = base64.b64encode(val_b)
-    val_s64 = val_b64.decode('ascii')
+    val_s64 = val_b64.decode("ascii")
     user_var = f"SetUserVar={var}={val_s64}"
-    if envx.get("TMUX", ''):
+    if envx.get("TMUX", ""):
         # github.com/tmux/tmux/wiki/FAQ#what-is-the-passthrough-escape-sequence-and-how-do-i-use-it
         # Add "set -g allow-passthrough on" to your tmux.conf
         write_tmux_cmd(term_osc_cmd(user_var))
