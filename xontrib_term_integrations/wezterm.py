@@ -1,12 +1,17 @@
-# Hook up xonsh shell integration for WezTerm, but the sequences used are not WezTerm specific and may provide the same functionality for other terminals. Most terminals are good at ignoring OSC sequences that they don't understand, but if not there are some bypasses:
+# Hook up xonsh shell integration for WezTerm, but the sequences used are not WezTerm
+# specific and may provide the same functionality for other terminals.
+# Most terminals are good at ignoring OSC sequences that they don't understand,
+# but if not there are some bypasses:
 # WEZTERM_SHELL_SKIP_ALL            - disables all
 # WEZTERM_SHELL_SKIP_SEMANTIC_ZONES - disables zones
 # WEZTERM_SHELL_SKIP_CWD            - disables OSC 7 cwd setting
-# WEZTERM_SHELL_SKIP_USER_VARS      - disable user vars that capture information about running programs
+# WEZTERM_SHELL_SKIP_USER_VARS      - disable user vars that capture info about running
+# programs
 # How to test
 # Set multiclick to select zones in WezTerm, then multiclick to see which areas select
 # Use MoveForwardZoneOfType/MoveBackwardZoneOfType key bindings
 
+import sys
 import os
 import subprocess
 
@@ -42,7 +47,10 @@ if not _skip_all:
         host = env.get("HOSTNAME", "")
         utils.write_osc7_cwd(host, newdir)
         # ↓ don't see the point in a helper function
-        # emits an OSC 7 sequence to inform the terminal of the current working directory.  It prefers to use a helper command provided by WezTerm if WezTerm is installed, but falls back to a simple command otherwise
+        # emits an OSC 7 sequence to inform the terminal
+        # of the current working directory
+        # It prefers to use a helper command provided by WezTerm if is installed,
+        # but falls back to a simple command otherwise
         # if isCmd('wezterm') and\
         # (0 == evalx('wezterm set-working-directory 2>/dev/null').returncode):
         #    return
@@ -62,7 +70,7 @@ if not _skip_all:
                 )  # tell WezTerm the full command that is being run
 
     @XSH.builtins.events.on_postcommand
-    def wezterm_cmd_pos(rtn=0, **_):  # Inform WezTerm of command success/failure here
+    def wezterm_cmd_pos(rtn=0, **_):  # Inform WezTerm of command success/failure
         opt = {f"{rtn}": None, "aid": os.getpid()}
         utils.SemanticPrompt.write_cmd_end(opt)
 
@@ -77,7 +85,8 @@ if not _skip_all:
         @XSH.builtins.events.on_pre_prompt  # Fires just before showing the prompt
         def wezterm_prompt_pre():
             """Write before starting to print out the output from the command"""
-            promptx = env.get("PROMPT_FIELDS", [])  # get Xonsh available prompt fields
+            # get Xonsh available prompt fields
+            promptx = env.get("PROMPT_FIELDS", [])
 
             # 1 tell WezTerm that no command is being run
             utils.set_user_var("WEZTERM_PROG", "")
@@ -89,8 +98,7 @@ if not _skip_all:
                 full_cmd = ["id", "-un"]
                 proc = subprocess.run(full_cmd, capture_output=True)
                 out = proc.stdout.decode().rstrip("\n")
-                err = proc.stderr.decode().rstrip("\n")
-                retn = proc.returncode
+                print(proc.stderr.decode().rstrip("\n"), file=sys.stderr)
                 user = out
             utils.set_user_var("WEZTERM_USER", user)
 
@@ -99,17 +107,15 @@ if not _skip_all:
                 hostname = hostname_wez
             elif hostname_xon := promptx["hostname"] if "hostname" in promptx else None:
                 hostname = hostname_xon
-            else:  # fallback to calling out hostname/ctl ??? likely never needed
+            else:  # fallback to calling out hostname/ctl
                 if isCmd("hostname"):
                     full_cmd = ["hostname"]
                 elif isCmd("hostnamectl"):
                     full_cmd = ["hostnamectl", "hostname"]
                 proc = subprocess.run(full_cmd, capture_output=True)
                 out = proc.stdout.decode().rstrip("\n")
-                err = proc.stderr.decode().rstrip("\n")
-                retn = proc.returncode
+                print(proc.stderr.decode().rstrip("\n"), file=sys.stderr)
                 hostname = out
-                print("set manual lhostname")
             utils.set_user_var("WEZTERM_HOST", hostname)
 
             # 4 tell WezTerm whether the pane is running inside tmux

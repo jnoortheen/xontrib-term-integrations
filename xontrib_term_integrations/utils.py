@@ -11,12 +11,11 @@ class Codes:
     # https://iterm2.com/documentation-escape-codes.html equivalents
     ESC = "\x1b"  # Escape, starts all the escape sequences
     BEL = "\x07"  # Bell
-    ST = ESC + "\\"  # 0x9C String Terminator: terminates strings in other controls
+    ST = ESC + "\\"  # 0x9C String Terminator: terminates S in other controls
     OSC = ESC + "]"  # \x5d Operating System Command
     CSI = ESC + "["  #      Control Sequence Introducer
-    DCS = (
-        ESC + "P"
-    )  # 0x90 Device Control String (terminated by ST): User-Defined Keys; get/set Termcap/Terminfo data
+    DCS = ESC + "P"  # 0x90 Device Control String (terminated by ST)
+    # User-Defined Keys; get/set Termcap/Terminfo data
 
 
 class ShellIntegrationPrompt:
@@ -64,8 +63,9 @@ class ShellIntegrationPrompt:
 
 
 class SemanticPrompt:
-    # Splits prompt into Input, Output, Prompt semantic zones with OSC 133 Escape sequence
-    # https://gitlab.freedesktop.org/Per_Bothner/specifications/blob/master/proposals/semantic-prompts.md
+    # Splits prompt into Input, Output, Prompt semantic zones with OSC 133
+    # gitlab.freedesktop.org/Per_Bothner/specifications/blob/master/
+    # proposals/semantic-prompts.md
 
     @staticmethod
     def osc_cmd(prefix, opt):
@@ -74,22 +74,27 @@ class SemanticPrompt:
 
     @staticmethod
     def line_new():
-        # OSC "133;L\007"            Do a fresh-line: If the cursor is the initial column (left, assuming left-to-right writing), do nothing. Otherwise, do the equivalent of "\r\n"
+        # OSC "133;L\007" Do a fresh-line: If the cursor is the initial column
+        # (left, assuming left-to-right writing), do nothing
+        # Otherwise, do the equivalent of "\r\n"
         return SemanticPrompt.osc_cmd("L", {})
 
     @staticmethod
     def line_new_cmd_new(opt={}):  # form_term_prompt_prefix, but with opt
-        # OSC "133;A" options "\007" First do a fresh-line. Then start a new command, and enter prompt mode
+        # OSC "133;A" options "\007" First do a fresh-line.
+        # Then start a new command, and enter prompt mode
         return SemanticPrompt.osc_cmd("A", opt)
 
     @staticmethod
     def line_new_cmd_new_kill_old(opt={}):
-        # OSC "133;N" options "\007" Same as OSC "133;A" but may first implicitly terminate a previous command
+        # OSC "133;N" options "\007" Same as OSC "133;A"
+        # but may first implicitly terminate a previous command
         return SemanticPrompt.osc_cmd("N", opt)
 
     @staticmethod
     def prompt_start(opt={"k": "i"}):
-        # OSC "133;P" options "\007" Explicit start of prompt. Optional after an 'A' or 'N' command
+        # OSC "133;P" options "\007" Explicit start of prompt.
+        # Optional after  'A' or 'N'
         # 'k' (kind) option specifies the type of prompt: ↓
         return SemanticPrompt.osc_cmd("P", opt)
 
@@ -114,17 +119,21 @@ class SemanticPrompt:
         return SemanticPrompt.prompt_start({"k": "s"})  # 's'econdary
 
     @staticmethod
-    def prompt_end_input_start(opt={}):  # form_term_prompt_suffix, but with opt
-        # OSC "133;B" options "\007" End of prompt and start of user input, terminated by a OSC "133;C" or another prompt (OSC "133;P").
+    def prompt_end_input_start(opt={}):
+        # form_term_prompt_suffix, but with opt
+        # OSC "133;B" options "\007" End of prompt and start of user input,
+        # terminated by a OSC "133;C" or another prompt (OSC "133;P").
         return SemanticPrompt.osc_cmd("B", opt)
 
     @staticmethod
     def prompt_end_input_start_nl(opt={}):
-        # OSC "133;I" options "\007" End of prompt and start of user input, terminated by end-of-line
+        # OSC "133;I" options "\007" End of prompt and start of user input,
+        # terminated by EOL
         return SemanticPrompt.osc_cmd("I", opt)
 
     @staticmethod
-    def input_end_output_start(opt={}):  # write_osc_output_prefix, but with opt
+    def input_end_output_start(opt={}):
+        # write_osc_output_prefix, but with opt
         # OSC "133;C" options "\007" End of input, and start of output
         return SemanticPrompt.osc_cmd("C", opt)
 
@@ -146,12 +155,12 @@ class SemanticPrompt:
 def opt_dict_to_str(opt):
     # convert options dictionary to `options ::= (";" option)*`, where
     # option is a simple string when dictionary value is 'None'
-    # option is a `named-option ::= option-name "=" value` otherwise (allows for named options with empty string values when dictionary value is '')
+    # option is a `named-option ::= option-name "=" value` otherwise
+    # (allows for named options with empty string values when dictionary value is '')
     if not type(opt) == dict:
         return ""
-    # return ";".join([str(k) + ('='+str(v) if not v == None else '') for k,v in opt.items()])
     if s := ";".join(
-        [str(k) + ("=" + str(v) if not v == None else "") for k, v in opt.items()]
+        [str(k) + ("=" + str(v) if v is not None else "") for k, v in opt.items()]
     ):
         return ";" + s
     return ""
@@ -194,7 +203,8 @@ def form_term_prompt_prefix():
 
 
 def form_term_prompt_suffix():
-    # FTCS_COMMAND_START Sent just after end of shell prompt, before the user-entered command
+    # FTCS_COMMAND_START Sent just after end of shell prompt,
+    # before the user-entered command
     # OSC 133 ; B ST
     return term_mark("B")
 
@@ -244,7 +254,8 @@ def write_osc_cwd(newdir):
 
 def write_osc7_cwd(host, newdir):
     # OSC 7 ; [Ps] ST
-    #         [Ps] is a file URL with a hostname and a path, like file://example.com/usr/bin
+    #         [Ps] is a file URL with a hostname and a path
+    #         like file://example.com/usr/bin
     write_osc7_cmd(f"file://{host}{newdir}")
 
 
@@ -257,13 +268,15 @@ def write_osc_user_host(env):
 
 def set_user_var(
     var, val
-):  # emit an OSC 1337 sequence to set a user var associated with the current terminal pane
+):  # emit an OSC 1337 sequence to set a user var associated with the current
+    # terminal pane
     val_b = val.encode("ascii")
     val_b64 = base64.b64encode(val_b)
     val_s64 = val_b64.decode("ascii")
     user_var = f"SetUserVar={var}={val_s64}"
     if envx.get("TMUX", ""):
-        # github.com/tmux/tmux/wiki/FAQ#what-is-the-passthrough-escape-sequence-and-how-do-i-use-it
+        # github.com/tmux/tmux/wiki/FAQ
+        # #what-is-the-passthrough-escape-sequence-and-how-do-i-use-it
         # Add "set -g allow-passthrough on" to your tmux.conf
         write_tmux_cmd(term_osc_cmd(user_var))
     else:
