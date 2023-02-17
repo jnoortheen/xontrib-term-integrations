@@ -28,6 +28,11 @@ xpip install xontrib-term-integrations
 xontrib load term_integration
 ```
 
+Set user vars[^1] via the helper `set_user_var` function:
+```xsh
+from xontrib_term_integrations.utils import set_user_var
+set_user_var('my_term_user_var','value_of_my_term_user_var')
+```
 
 ## Contributing
 
@@ -41,3 +46,5 @@ Please make sure that you
 ```sh
 pre-commit install-hooks
 ```
+
+[^1]: Variables associated with a given pane rather than a process. [WezTerm](https://wezfurlong.org/wezterm/shell-integration.html#user-vars), [iTerm2](https://iterm2.com/documentation-escape-codes.html)
