@@ -47,4 +47,10 @@ Please make sure that you
 pre-commit install-hooks
 ```
 
+## Known issues
+
+- Multiline prompt is not supported due to this [xonsh issue](https://github.com/xonsh/xonsh/issues/5058)
+- (WezTerm) Semantic _right_ prompt not separated from the next-line _left_ prompt ([issue](https://github.com/wez/wezterm/issues/3115))
+- WezTerm is _not_ recognized in root shells due to [this issue](https://github.com/wez/wezterm/issues/3114)
+
 [^1]: Variables associated with a given pane rather than a process. [WezTerm](https://wezfurlong.org/wezterm/shell-integration.html#user-vars), [iTerm2](https://iterm2.com/documentation-escape-codes.html)
