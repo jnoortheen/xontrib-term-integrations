@@ -54,12 +54,13 @@ class ShellIntegrationPrompt:
             elif self.prompt_name == "BOTTOM_TOOLBAR":
                 prefix = SemanticPrompt.prompt_start_secondary()
                 suffix = ""  # ... ␤ bugs and adds and extra empty line
-            elif (
-                self.prompt_name == "MULTILINE_PROMPT"
-            ):  # todo: bugs https://github.com/xonsh/xonsh/issues/5058
-                prefix = SemanticPrompt.prompt_start_continue()
-                prefix = ""
-                suffix = ""
+            elif self.prompt_name == "MULTILINE_PROMPT":
+                prefix, suffix = "", ""
+                _pre, _pos = "MULTILINE_PROMPT_PRE", "MULTILINE_PROMPT_POS"
+                if not (_pre_val := envx.get(_pre)) and not _pre_val == "":
+                    envx[_pre] = ansi_esc(SemanticPrompt.prompt_start_continue())
+                if not (_pos_val := envx.get(_pos)) and not _pos_val == "":
+                    envx[_pos] = ansi_esc(SemanticPrompt.prompt_end_input_start())
             else:
                 return prompt
         prefix = (
