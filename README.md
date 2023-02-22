@@ -49,7 +49,17 @@ pre-commit install-hooks
 
 ## Known issues
 
-- Multiline prompt is not supported due to this [xonsh issue](https://github.com/xonsh/xonsh/issues/5058)
+- (WezTerm) Multiline prompt is partially supported:
+  - every continuation line is semantically marked by default:
+    ```xsh
+    if True:
+    #↓ continuation prompt
+    .....     echo 1
+    #     ↑ input
+    ```
+    so you can select `    echo 1` as a `SemanticZone` with a mouse multiclick, but you can't select both lines as one zone (and would need to map some combo of commands to hack around it)
+  - if you set `$MULTILINE_PROMPT_PRE=''`, `$MULTILINE_PROMPT_POS=''`, then continuation lines won't be marked, you'd be able to select all the lines as one `SemanticZone` (unles the _right_ prompt interferes), but that will also include `..` continuation markers (so you'd either need to disable them in Xonsh or add some extra WezTerm lua parsing hack to trim them)
+    </br> (follow this [WezTerm discussion](https://github.com/wez/wezterm/discussions/3130) for updates)
 - (WezTerm) Semantic _right_ prompt not separated from the next-line _left_ prompt ([issue](https://github.com/wez/wezterm/issues/3115))
 - WezTerm is _not_ recognized in root shells due to [this issue](https://github.com/wez/wezterm/issues/3114)
 
