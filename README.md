@@ -38,7 +38,23 @@ from xontrib_term_integrations.utils import set_user_var
 set_user_var('my_term_user_var','value_of_my_term_user_var')
 ```
 
-You can disable registering the alias with a `$XONTRIB_TERM_INTEGRATIONS_SKIP_ALIAS = True`
+Print Explicit Hyperlinks[^2] via the helper `print_link` function:
+```xsh
+# via a xonsh alias
+print_link 'https://example.com' 'Example Domain'
+
+# or an explicit Python import
+from xontrib_term_integrations.utils import print_link
+print_link('https://example.com', 'Example Domain')
+```
+
+You can disable registering the aliases with a `$XONTRIB_TERM_INTEGRATIONS_SKIP_ALIAS = True`
+
+(WezTerm) You can disable other features with the following environment variables:
+  - `$WEZTERM_SHELL_SKIP_ALL = False` to disable all integrations
+  - `$WEZTERM_SHELL_SKIP_SEMANTIC_ZONES = False` to disable zones
+  - `$WEZTERM_SHELL_SKIP_CWD = False` to disable OSC 7 cwd setting
+  - `$WEZTERM_SHELL_SKIP_USER_VARS = False` to disable user vars that capture information about running programs
 
 ## Contributing
 
@@ -70,3 +86,4 @@ pre-commit install-hooks
 - WezTerm is _not_ recognized in root shells due to [this issue](https://github.com/wez/wezterm/issues/3114)
 
 [^1]: Variables associated with a given pane rather than a process. [WezTerm](https://wezfurlong.org/wezterm/shell-integration.html#user-vars), [iTerm2](https://iterm2.com/documentation-escape-codes.html)
+[^2]: Display a cleaner text instead of a URL that can be clicked to resolve to that URL. [WezTerm](https://wezfurlong.org/wezterm/hyperlinks.html#explicit-hyperlinks), [iTerm2](https://iterm2.com/documentation-escape-codes.html)
