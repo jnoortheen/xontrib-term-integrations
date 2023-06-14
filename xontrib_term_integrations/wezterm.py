@@ -17,7 +17,7 @@ import sys
 
 from xonsh.built_ins import XSH
 
-from . import utils
+from . import semantic_prompt, utils
 
 env = XSH.env or {}
 evalx = XSH.builtins.evalx
@@ -63,7 +63,7 @@ if not _skip_all:
         @XSH.builtins.events.on_precommand  # Fires just before a command is executed
         def wezterm_cmd_pre(cmd: str, **_):
             """Write before starting to print out the output from the command"""
-            utils.SemanticPrompt.write_input_end_output_start()
+            semantic_prompt.write_input_end_output_start()
             if not _skip_usr_var:
                 utils.set_user_var(
                     "WEZTERM_PROG", cmd
@@ -72,7 +72,7 @@ if not _skip_all:
     @XSH.builtins.events.on_postcommand
     def wezterm_cmd_pos(rtn=0, **_):  # Inform WezTerm of command success/failure
         opt = {f"{rtn}": None, "aid": os.getpid()}
-        utils.SemanticPrompt.write_cmd_end(opt)
+        semantic_prompt.write_cmd_end(opt)
 
     if not _skip_cwd:
 
@@ -129,6 +129,6 @@ if not _skip_all:
     opt = {"cl": "m", "aid": os.getpid()}
     for prompt in prompt_name:
         if XSH.env[prompt]:
-            XSH.env[prompt] = utils.ShellIntegrationPrompt(
+            XSH.env[prompt] = semantic_prompt.ShellIntegrationPrompt(
                 XSH.env, prompt_name=prompt, extend=True, ext_opt=opt
             )

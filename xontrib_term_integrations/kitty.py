@@ -2,6 +2,7 @@ from xonsh.built_ins import XSH
 from xonsh.completers.completer import add_one_completer
 
 from . import kitty_completions, utils
+from .semantic_prompt import ShellIntegrationPrompt
 
 
 @XSH.builtins.events.on_precommand
@@ -34,7 +35,7 @@ def ps2_multiline_prompt():
     return "."
 
 
-XSH.env["PROMPT"] = utils.ShellIntegrationPrompt(XSH.env)
+XSH.env["PROMPT"] = ShellIntegrationPrompt(XSH.env)
 XSH.env["MULTILINE_PROMPT"] = ps2_multiline_prompt
 
 add_one_completer("kitty", kitty_completions.xonsh_complete, loc="<import")

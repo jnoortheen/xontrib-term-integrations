@@ -1,6 +1,7 @@
 from xonsh.built_ins import XSH
 
 from . import utils
+from .semantic_prompt import ShellIntegrationPrompt
 
 
 @XSH.builtins.events.on_precommand
@@ -27,4 +28,4 @@ def onpostinit(**__):
     utils.write_osc_user_host(env)
 
 
-XSH.env["PROMPT"] = utils.ShellIntegrationPrompt(XSH.env)
+XSH.env["PROMPT"] = ShellIntegrationPrompt(XSH.env)
