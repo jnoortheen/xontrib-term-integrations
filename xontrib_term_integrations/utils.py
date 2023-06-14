@@ -1,7 +1,9 @@
 import base64
 import sys
+from typing import Optional
 
 from xonsh.built_ins import XSH
+from xonsh.cli_utils import Annotated, Arg, ArgParserAlias
 
 
 class Codes:
@@ -146,3 +148,28 @@ def set_user_var(
         write_tmux_cmd(term_osc_cmd(user_var))
     else:
         write_osc_cmd(user_var)
+
+
+def set_user_var_fn(
+    var: str, val: Annotated[Optional[str], Arg(nargs="?")] = ""  # noqa
+):
+    """Sets a terminal pane's user `Variable` to a given `Value`
+    (see ``wezfurlong.org/wezterm/shell-integration.html#user-vars`` for details)
+
+    Parameters
+    ----------
+    var
+        Variable name
+    val
+        Variable value (defaults to an empty string)
+    """
+
+    set_user_var(var, val)
+
+
+set_user_var_alias = ArgParserAlias(
+    func=set_user_var_fn, has_args=True, prog="set_user_var"
+)
+set_wezterm_user_var_alias = ArgParserAlias(
+    func=set_user_var_fn, has_args=True, prog="set_wezterm_user_var"
+)

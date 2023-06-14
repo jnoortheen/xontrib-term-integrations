@@ -28,11 +28,17 @@ xpip install xontrib-term-integrations
 xontrib load term_integration
 ```
 
-Set user vars[^1] via the helper `set_user_var` function:
+(WezTerm) Set user vars[^1] via the helper `set_user_var` function:
 ```xsh
+# via a xonsh alias
+set_wezterm_user_var 'my_term_user_var' 'value_of_my_term_user_var'
+
+# or an explicit Python import
 from xontrib_term_integrations.utils import set_user_var
 set_user_var('my_term_user_var','value_of_my_term_user_var')
 ```
+
+You can disable registering the alias with a `$XONTRIB_TERM_INTEGRATIONS_SKIP_ALIAS = True`
 
 ## Contributing
 

@@ -26,6 +26,7 @@ _skip_all = env.get("WEZTERM_SHELL_SKIP_ALL", False)
 _skip_cwd = env.get("WEZTERM_SHELL_SKIP_CWD", False)
 _skip_zone = env.get("WEZTERM_SHELL_SKIP_SEMANTIC_ZONES", False)
 _skip_usr_var = env.get("WEZTERM_SHELL_SKIP_USER_VARS", False)
+_skip_alias = env.get("XONTRIB_TERM_INTEGRATIONS_SKIP_ALIAS", False)
 
 get_bin = XSH.commands_cache.locate_binary
 get_bin_lazy = XSH.commands_cache.lazy_locate_binary
@@ -123,6 +124,9 @@ if not _skip_all:
                 utils.set_user_var("WEZTERM_IN_TMUX", "1")
             else:
                 utils.set_user_var("WEZTERM_IN_TMUX", "0")
+
+    if not _skip_alias:
+        XSH.aliases["set_wezterm_user_var"] = utils.set_wezterm_user_var_alias
 
     prompt_name = ["PROMPT", "RIGHT_PROMPT", "BOTTOM_TOOLBAR", "MULTILINE_PROMPT"]
     extend = False if _skip_zone else True
