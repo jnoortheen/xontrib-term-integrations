@@ -4,6 +4,10 @@ from xonsh.completers.completer import add_one_completer
 from . import kitty_completions, utils
 from .semantic_prompt import ShellIntegrationPrompt
 
+env = XSH.env or {}
+
+_skip_alias = env.get("XONTRIB_TERM_INTEGRATIONS_SKIP_ALIAS", False)
+
 
 @XSH.builtins.events.on_precommand
 def iterm_precmd(**_):
@@ -37,5 +41,8 @@ def ps2_multiline_prompt():
 
 XSH.env["PROMPT"] = ShellIntegrationPrompt(XSH.env)
 XSH.env["MULTILINE_PROMPT"] = ps2_multiline_prompt
+
+if not _skip_alias:
+    XSH.aliases["print_link"] = utils.write_osc_hyperlink_alias
 
 add_one_completer("kitty", kitty_completions.xonsh_complete, loc="<import")

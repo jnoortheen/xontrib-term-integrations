@@ -47,6 +47,10 @@ def term_osc7_cmd(code):
     return f"{Codes.OSC}7;{code}{Codes.ST}"
 
 
+def term_osc8_cmd(code):
+    return f"{Codes.OSC}8;{code}{Codes.ST}"
+
+
 def term_dcs_cmd(code):
     return f"{Codes.DCS}{code}{Codes.ST}"
 
@@ -84,6 +88,10 @@ def write_osc_cmd(code):
 
 def write_osc7_cmd(code):
     return write_to_out(term_osc7_cmd(code))
+
+
+def write_osc8_cmd(code):
+    return write_to_out(term_osc8_cmd(code))
 
 
 def write_dcs_cmd(code):
@@ -131,6 +139,40 @@ def write_osc_user_host(env):
         write_osc_cmd(f"RemoteHost={user}@{host}")
 
 
+def write_osc_hyperlink(uri, text, params=""):
+    # wezfurlong.org/wezterm/hyperlinks.html#explicit-hyperlinks
+    # open : OSC 8 ; params ; [URI] ST
+    # text : no escape sequences
+    # close: OSC 8 ;        ;       ST
+    write_to_out(term_osc8_cmd(f"{params};{uri}") + f"{text}" + term_osc8_cmd(";"))
+
+
+def write_osc_hyperlink_fn(
+    uri: str, text: str, params: Annotated[Optional[str], Arg(nargs="?")] = ""  # noqa
+):
+    """Prints an Explicit Hyperlink `Text` resolving to the given `URL`
+    (see ``wezfurlong.org/wezterm/hyperlinks.html#explicit-hyperlinks`` for details)
+
+    Parameters
+    ----------
+    uri
+        Target of the hyperlink, including the scheme, e.g.
+        `https://` for web addresses
+        `file://` for local files (followed by a mandatory `hostname`)
+        `mailto:` for email, etc.
+    text
+        Hyperlink text that resolves to the URI on click
+    params
+        Additional colon:separated parameters, e.g., `id:1`
+    """
+
+    write_osc_hyperlink(uri, text, params)
+
+
+def print_link(uri, text, params=""):
+    write_osc_hyperlink(uri, text, params)
+
+
 def set_user_var(
     var, val
 ):  # emit an OSC 1337 sequence to set a user var associated with the current
@@ -167,6 +209,9 @@ def set_user_var_fn(
     set_user_var(var, val)
 
 
+write_osc_hyperlink_alias = ArgParserAlias(
+    func=write_osc_hyperlink_fn, has_args=True, prog="print_link"
+)
 set_user_var_alias = ArgParserAlias(
     func=set_user_var_fn, has_args=True, prog="set_user_var"
 )
