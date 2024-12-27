@@ -13,7 +13,7 @@ if env.get("XONSH_INTERACTIVE", False):
     TERM = os.getenv("TERM", "").lower()
     TERM_PROGRAM = os.getenv("TERM_PROGRAM", "").lower()
     # avoid terminals that don't like OSC sequences
-    if not TERM == "dumb" and not TERM == "linux":
+    if TERM not in {"dumb", "linux"}:
         if ("kitty" in TERMINFO) or ("kitty" in TERM):
             import xontrib_term_integrations.kitty  # noqa
         elif (
