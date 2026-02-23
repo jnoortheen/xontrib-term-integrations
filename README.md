@@ -57,7 +57,7 @@ pre-commit install-hooks
 ## Known issues
 
 - <details>
-    <summary>*WezTerm*</summary>
+    <summary>**WezTerm**</summary>
 
     - (WezTerm) Multiline prompt is partially supported:
       - every continuation line is semantically marked by default:
@@ -76,7 +76,7 @@ pre-commit install-hooks
   </details>
 
 - <details>
-  <summary>*Ghostty*</summary>
+  <summary>**Ghostty**</summary>
   
   Implemented features:
     - [x] Do not confirm close for terminals where the cursor is at a prompt.
@@ -86,7 +86,6 @@ pre-commit install-hooks
     - [ ] The cursor at the prompt is turned into a bar to represent more typical text editing.
     - [ ] The jump_to_prompt keybinding can be used to scroll the terminal window forward and back through prompts.
       > Because of the implementation, jumping includes secondary newlines in multiline prompts.
-
     - [ ] Alt+click (option+click on macOS) moves the cursor to the click location while at a prompt.
     - [ ] sudo can be automatically wrapped to preserve Ghostty terminfo (disabled by default)
     - [ ] ssh can be automatically wrapped to either transmit the Ghostty terminfo or set the TERM environment variable to xterm-256color to maximize compatibility (disabled by default)
