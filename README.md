@@ -56,40 +56,40 @@ pre-commit install-hooks
 
 ## Known issues
 
-- <details>
-    <summary>**WezTerm**</summary>
+<details>
+<summary><strong>WezTerm</strong></summary>
 
-    - (WezTerm) Multiline prompt is partially supported:
-      - every continuation line is semantically marked by default:
-        ```xsh
-        if True:
-        #↓ continuation prompt
-        .....     echo 1
-        #     ↑ input
-        ```
-        so you can select `    echo 1` as a `SemanticZone` with a mouse multiclick, but you can't select both lines as one zone (and would need to map some combo of commands to hack around it)
-      - if you set `$MULTILINE_PROMPT_PRE=''`, `$MULTILINE_PROMPT_POS=''`, then continuation lines won't be marked, you'd be able to select all the lines as one `SemanticZone` (unles the _right_ prompt interferes), but that will also include `..` continuation markers (so you'd either need to disable them in Xonsh or add some extra WezTerm lua parsing hack to trim them)
-        </br> (follow this [WezTerm discussion](https://github.com/wez/wezterm/discussions/3130) for updates)
-    - (WezTerm) Semantic _right_ prompt not separated from the next-line _left_ prompt ([issue](https://github.com/wez/wezterm/issues/3115))
-    - WezTerm is _not_ recognized in root shells due to [this issue](https://github.com/wez/wezterm/issues/3114)
+- (WezTerm) Multiline prompt is partially supported:
+  - every continuation line is semantically marked by default:
+    ```xsh
+    if True:
+    #↓ continuation prompt
+    .....     echo 1
+    #     ↑ input
+    ```
+    so you can select `    echo 1` as a `SemanticZone` with a mouse multiclick, but you can't select both lines as one zone (and would need to map some combo of commands to hack around it)
+  - if you set `$MULTILINE_PROMPT_PRE=''`, `$MULTILINE_PROMPT_POS=''`, then continuation lines won't be marked, you'd be able to select all the lines as one `SemanticZone` (unles the _right_ prompt interferes), but that will also include `..` continuation markers (so you'd either need to disable them in Xonsh or add some extra WezTerm lua parsing hack to trim them)
+    </br> (follow this [WezTerm discussion](https://github.com/wez/wezterm/discussions/3130) for updates)
+- (WezTerm) Semantic _right_ prompt not separated from the next-line _left_ prompt ([issue](https://github.com/wez/wezterm/issues/3115))
+- WezTerm is _not_ recognized in root shells due to [this issue](https://github.com/wez/wezterm/issues/3114)
 
-  </details>
+</details>
 
-- <details>
-  <summary>**Ghostty**</summary>
-  
-  Implemented features:
-    - [x] Do not confirm close for terminals where the cursor is at a prompt.
-    - [x] New terminals start in the working directory of the previously focused terminal.
-    - [ ] Complex prompts resize correctly by allowing the shell to redraw -- rather than reflow -- the prompt line.
-    - [x] Triple-click while holding control (Linux) or command (macOS) to select the output of a command.
-    - [ ] The cursor at the prompt is turned into a bar to represent more typical text editing.
-    - [ ] The jump_to_prompt keybinding can be used to scroll the terminal window forward and back through prompts.
-      > Because of the implementation, jumping includes secondary newlines in multiline prompts.
-    - [ ] Alt+click (option+click on macOS) moves the cursor to the click location while at a prompt.
-    - [ ] sudo can be automatically wrapped to preserve Ghostty terminfo (disabled by default)
-    - [ ] ssh can be automatically wrapped to either transmit the Ghostty terminfo or set the TERM environment variable to xterm-256color to maximize compatibility (disabled by default)
+<details>
+<summary><strong>Ghostty</strong></summary>
 
-  </details>
+Implemented features:
+- [x] Do not confirm close for terminals where the cursor is at a prompt.
+- [x] New terminals start in the working directory of the previously focused terminal.
+- [ ] Complex prompts resize correctly by allowing the shell to redraw -- rather than reflow -- the prompt line.
+- [x] Triple-click while holding control (Linux) or command (macOS) to select the output of a command.
+- [ ] The cursor at the prompt is turned into a bar to represent more typical text editing.
+- [x] The jump_to_prompt keybinding can be used to scroll the terminal window forward and back through prompts.
+  > :warning: Because of the implementation, jumping includes secondary newlines in multiline prompts.
+- [ ] Alt+click (option+click on macOS) moves the cursor to the click location while at a prompt.
+- [ ] sudo can be automatically wrapped to preserve Ghostty terminfo (disabled by default)
+- [ ] ssh can be automatically wrapped to either transmit the Ghostty terminfo or set the TERM environment variable to xterm-256color to maximize compatibility (disabled by default)
+
+</details>
 
 [^1]: Variables associated with a given pane rather than a process. [WezTerm](https://wezfurlong.org/wezterm/shell-integration.html#user-vars), [iTerm2](https://iterm2.com/documentation-escape-codes.html)
