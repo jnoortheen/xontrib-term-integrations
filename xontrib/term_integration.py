@@ -24,6 +24,8 @@ if env.get("XONSH_INTERACTIVE", False):
             import xontrib_term_integrations.wezterm  # noqa
 
             # todo: fails in a root shell https://github.com/wez/wezterm/issues/3114
+        elif "ghostty" in TERM:
+            import xontrib_term_integrations.ghostty  # noqa
         else:
             # fallback
             # if "iTerm" in os.getenv("TERM_PROGRAM", ""):
