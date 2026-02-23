@@ -78,17 +78,17 @@ pre-commit install-hooks
 <details>
 <summary><strong>Ghostty</strong></summary>
 
-Implemented features:
-- [x] Do not confirm close for terminals where the cursor is at a prompt.
-- [x] New terminals start in the working directory of the previously focused terminal.
-- [ ] Complex prompts resize correctly by allowing the shell to redraw -- rather than reflow -- the prompt line.
-- [x] Triple-click while holding control (Linux) or command (macOS) to select the output of a command.
-- [ ] The cursor at the prompt is turned into a bar to represent more typical text editing.
-- [x] The jump_to_prompt keybinding can be used to scroll the terminal window forward and back through prompts.
-  > :warning: Because of the implementation, jumping includes secondary newlines in multiline prompts.
-- [ ] Alt+click (option+click on macOS) moves the cursor to the click location while at a prompt.
-- [ ] sudo can be automatically wrapped to preserve Ghostty terminfo (disabled by default)
-- [ ] ssh can be automatically wrapped to either transmit the Ghostty terminfo or set the TERM environment variable to xterm-256color to maximize compatibility (disabled by default)
+- Implemented features:
+    - [x] Do not confirm close for terminals where the cursor is at a prompt.
+    - [x] New terminals start in the working directory of the previously focused terminal.
+    - [ ] Complex prompts resize correctly by allowing the shell to redraw -- rather than reflow -- the prompt line.
+    - [x] Triple-click while holding control (Linux) or command (macOS) to select the output of a command.
+    - [ ] The cursor at the prompt is turned into a bar to represent more typical text editing.
+    - [x] The jump_to_prompt keybinding can be used to scroll the terminal window forward and back through prompts.
+      > :warning: Because of the implementation, jumping includes secondary newlines in multiline prompts.
+    - [ ] Alt+click (option+click on macOS) moves the cursor to the click location while at a prompt.
+    - [ ] sudo can be automatically wrapped to preserve Ghostty terminfo (disabled by default)
+    - [ ] ssh can be automatically wrapped to either transmit the Ghostty terminfo or set the TERM environment variable to xterm-256color to maximize compatibility (disabled by default)
 
 </details>
 
