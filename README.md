@@ -5,6 +5,7 @@ The following terminal emulators are supported
 - [iTerm2](https://iterm2.com/documentation-shell-integration.html)
 - [kitty](https://sw.kovidgoyal.net/kitty/shell-integration/)
 - [WezTerm](https://wezfurlong.org/wezterm/shell-integration.html) with CWD; Input, Output, and Prompt zones; and User Vars for tracking additional shell state
+- [Ghostty](https://ghostty.org/docs/features/shell-integration)
 
 **Note**: If identifying current terminal fails, `iTerm2` hooks are loaded.
 
@@ -55,6 +56,9 @@ pre-commit install-hooks
 
 ## Known issues
 
+<details>
+<summary><strong>WezTerm</strong></summary>
+
 - (WezTerm) Multiline prompt is partially supported:
   - every continuation line is semantically marked by default:
     ```xsh
@@ -68,5 +72,24 @@ pre-commit install-hooks
     </br> (follow this [WezTerm discussion](https://github.com/wez/wezterm/discussions/3130) for updates)
 - (WezTerm) Semantic _right_ prompt not separated from the next-line _left_ prompt ([issue](https://github.com/wez/wezterm/issues/3115))
 - WezTerm is _not_ recognized in root shells due to [this issue](https://github.com/wez/wezterm/issues/3114)
+
+</details>
+
+<details>
+<summary><strong>Ghostty</strong></summary>
+
+- Implemented features:
+    - [x] Do not confirm close for terminals where the cursor is at a prompt.
+    - [x] New terminals start in the working directory of the previously focused terminal.
+    - [ ] Complex prompts resize correctly by allowing the shell to redraw -- rather than reflow -- the prompt line.
+    - [x] Triple-click while holding control (Linux) or command (macOS) to select the output of a command.
+    - [ ] The cursor at the prompt is turned into a bar to represent more typical text editing.
+    - [x] The jump_to_prompt keybinding can be used to scroll the terminal window forward and back through prompts.
+      > :warning: Because of the implementation, jumping includes secondary newlines in multiline prompts.
+    - [ ] Alt+click (option+click on macOS) moves the cursor to the click location while at a prompt.
+    - [ ] sudo can be automatically wrapped to preserve Ghostty terminfo (disabled by default)
+    - [ ] ssh can be automatically wrapped to either transmit the Ghostty terminfo or set the TERM environment variable to xterm-256color to maximize compatibility (disabled by default)
+
+</details>
 
 [^1]: Variables associated with a given pane rather than a process. [WezTerm](https://wezfurlong.org/wezterm/shell-integration.html#user-vars), [iTerm2](https://iterm2.com/documentation-escape-codes.html)
