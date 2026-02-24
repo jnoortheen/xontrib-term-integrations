@@ -3,7 +3,7 @@ import re
 from xonsh.built_ins import XSH
 
 from . import utils
-from .semantic_prompt import ShellIntegrationPrompt
+from .semantic_prompt import ShellIntegrationPrompt, line_new_cmd_new
 
 ghostty_shell_features = XSH.env["GHOSTTY_SHELL_FEATURES"].split(",")
 
@@ -25,8 +25,15 @@ def onchdir(olddir, newdir, **_):
 
 
 def get_adjusted_prompt():
+    """
+    Same workaround as for bash ghostty integration:
+    # bash doesn't redraw the leading lines in a multiline prompt
+    # so we mark the start of each line (after each newline) as a secondary prompt;
+    # this correctly handles multiline prompts by setting the first to primary
+    # and the subsequent lines to secondary.
+    """
     prompt = ShellIntegrationPrompt(XSH.env)()
-    return re.sub("(?<=\n)", "\x01\x1b]133;A;k=s\x07\x02", prompt)
+    return re.sub("(?<=\n)", f"\x01{line_new_cmd_new({'k': 's'})}\x02", prompt)
 
 
 XSH.env["PROMPT"] = get_adjusted_prompt()
