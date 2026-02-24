@@ -1,4 +1,5 @@
 import re
+from functools import wraps
 
 from xonsh.built_ins import XSH
 
@@ -24,7 +25,7 @@ def onchdir(olddir, newdir, **_):
     utils.write_osc7_cwd(XSH.env["HOSTNAME"], newdir)
 
 
-def get_adjusted_prompt():
+def get_adjusted_prompt(prompt_function):
     """
     Same workaround as for bash ghostty integration:
     # bash doesn't redraw the leading lines in a multiline prompt
@@ -32,8 +33,13 @@ def get_adjusted_prompt():
     # this correctly handles multiline prompts by setting the first to primary
     # and the subsequent lines to secondary.
     """
-    prompt = ShellIntegrationPrompt(XSH.env)()
-    return re.sub("(?<=\n)", f"\x01{line_new_cmd_new({'k': 's'})}\x02", prompt)
+
+    @wraps(prompt_function)
+    def wrapper():
+        prompt = prompt_function()
+        return re.sub("(?<=\n)", f"\x01{line_new_cmd_new({'k': 's'})}\x02", prompt)
+
+    return wrapper
 
 
-XSH.env["PROMPT"] = get_adjusted_prompt()
+XSH.env["PROMPT"] = get_adjusted_prompt(ShellIntegrationPrompt(XSH.env))
