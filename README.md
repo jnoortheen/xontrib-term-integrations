@@ -1,7 +1,9 @@
 # Terminal Emulators integration
+
 [Shell integration](https://iterm2.com/documentation-escape-codes.html) for Xonsh.
 
 The following terminal emulators are supported
+
 - [iTerm2](https://iterm2.com/documentation-shell-integration.html)
 - [kitty](https://sw.kovidgoyal.net/kitty/shell-integration/)
 - [WezTerm](https://wezfurlong.org/wezterm/shell-integration.html) with CWD; Input, Output, and Prompt zones; and User Vars for tracking additional shell state
@@ -11,25 +13,24 @@ The following terminal emulators are supported
 
 PRs welcome on improving the support to more terminal programs :)
 
-
 ## Installation
 
 To install use pip:
 
-``` bash
+```bash
 xpip install xontrib-term-integrations
 # or: xpip install -U git+https://github.com/jnoortheen/xontrib-term-integrations
 ```
 
-
 ## Usage
 
-``` bash
+```bash
 # this modifies the $PROMPT function. So load it after setting $PROMPT if you have a custom value
 xontrib load term_integration
 ```
 
 (WezTerm) Set user vars[^1] via the helper `set_user_var` function:
+
 ```xsh
 # via a xonsh alias
 set_wezterm_user_var 'my_term_user_var' 'value_of_my_term_user_var'
@@ -44,15 +45,18 @@ You can disable registering the alias with a `$XONTRIB_TERM_INTEGRATIONS_SKIP_AL
 ## Contributing
 
 Please make sure that you
-* Document the purpose of functions and classes.
-* When adding a new feature, please mention it in the `README.md`. Use screenshots when applicable.
-* [Conventional Commit](https://www.conventionalcommits.org/en/v1.0.0/) style should be used
+
+- Document the purpose of functions and classes.
+- When adding a new feature, please mention it in the `README.md`. Use screenshots when applicable.
+- [Conventional Commit](https://www.conventionalcommits.org/en/v1.0.0/) style should be used
   for commit messages as it is used to generate changelog.
-* Please use [pre-commit](https://pre-commit.com/) to run qa checks. Configure it with
+- Please use [pre-commit](https://pre-commit.com/) to run qa checks. Configure it with
 
 ```sh
 pre-commit install-hooks
 ```
+
+- For new releases, create a GitHub release with new tag (e.g. `v0.x.x`) and it will automatically push the package to PyPI.
 
 ## Known issues
 
@@ -79,16 +83,16 @@ pre-commit install-hooks
 <summary><strong>Ghostty</strong></summary>
 
 - Implemented features:
-    - [x] Do not confirm close for terminals where the cursor is at a prompt.
-    - [x] New terminals start in the working directory of the previously focused terminal.
-    - [ ] Complex prompts resize correctly by allowing the shell to redraw -- rather than reflow -- the prompt line.
-    - [x] Triple-click while holding control (Linux) or command (macOS) to select the output of a command.
-    - [ ] The cursor at the prompt is turned into a bar to represent more typical text editing.
-    - [x] The jump_to_prompt keybinding can be used to scroll the terminal window forward and back through prompts.
-      > :warning: Because of the implementation, jumping includes secondary newlines in multiline prompts.
-    - [ ] Alt+click (option+click on macOS) moves the cursor to the click location while at a prompt.
-    - [ ] sudo can be automatically wrapped to preserve Ghostty terminfo (disabled by default)
-    - [ ] ssh can be automatically wrapped to either transmit the Ghostty terminfo or set the TERM environment variable to xterm-256color to maximize compatibility (disabled by default)
+  - [x] Do not confirm close for terminals where the cursor is at a prompt.
+  - [x] New terminals start in the working directory of the previously focused terminal.
+  - [ ] Complex prompts resize correctly by allowing the shell to redraw -- rather than reflow -- the prompt line.
+  - [x] Triple-click while holding control (Linux) or command (macOS) to select the output of a command.
+  - [ ] The cursor at the prompt is turned into a bar to represent more typical text editing.
+  - [x] The jump_to_prompt keybinding can be used to scroll the terminal window forward and back through prompts.
+    > :warning: Because of the implementation, jumping includes secondary newlines in multiline prompts.
+  - [ ] Alt+click (option+click on macOS) moves the cursor to the click location while at a prompt.
+  - [ ] sudo can be automatically wrapped to preserve Ghostty terminfo (disabled by default)
+  - [ ] ssh can be automatically wrapped to either transmit the Ghostty terminfo or set the TERM environment variable to xterm-256color to maximize compatibility (disabled by default)
 
 </details>
 
