@@ -151,7 +151,8 @@ def set_user_var(
 
 
 def set_user_var_fn(
-    var: str, val: Annotated[Optional[str], Arg(nargs="?")] = ""  # noqa
+    var: str,
+    val: Annotated[Optional[str], Arg(nargs="?")] = "",  # noqa
 ):
     """Sets a terminal pane's user `Variable` to a given `Value`
     (see ``wezfurlong.org/wezterm/shell-integration.html#user-vars`` for details)

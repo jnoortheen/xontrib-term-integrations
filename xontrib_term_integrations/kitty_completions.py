@@ -1,4 +1,5 @@
 """Completers for pip."""
+
 import contextlib
 import os
 import subprocess
