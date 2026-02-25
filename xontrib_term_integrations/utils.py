@@ -22,7 +22,7 @@ def opt_dict_to_str(opt):
     # option is a simple string when dictionary value is 'None'
     # option is a `named-option ::= option-name "=" value` otherwise
     # (allows for named options with empty string values when dictionary value is '')
-    if not type(opt) == dict:
+    if not isinstance(opt, dict):
         return ""
     if s := ";".join(
         [str(k) + ("=" + str(v) if v is not None else "") for k, v in opt.items()]
@@ -135,7 +135,7 @@ def set_user_var(
     var, val
 ):  # emit an OSC 1337 sequence to set a user var associated with the current
     # terminal pane
-    if not type(val) == str:
+    if not isinstance(val, str):
         val = str(val)
     val_b = val.encode("utf8")
     val_b64 = base64.b64encode(val_b)
