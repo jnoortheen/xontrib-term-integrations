@@ -6,8 +6,8 @@ includes = ["xontrib", "xontrib_term_integrations"]
 [tool.pdm.version]
 source = "scm"
 [build-system]
-requires = ["pdm-pep517>=1.0.0"]
-build-backend = "pdm.pep517.api"
+requires = ["pdm-backend"]
+build-backend = "pdm.backend"
 
 
 [project]
