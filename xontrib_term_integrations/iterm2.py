@@ -3,6 +3,10 @@ from xonsh.built_ins import XSH
 from . import utils
 from .semantic_prompt import ShellIntegrationPrompt
 
+env = XSH.env or {}
+
+_skip_alias = env.get("XONTRIB_TERM_INTEGRATIONS_SKIP_ALIAS", False)
+
 
 @XSH.builtins.events.on_precommand
 def iterm_precmd(**_):
@@ -29,3 +33,5 @@ def onpostinit(**__):
 
 
 XSH.env["PROMPT"] = ShellIntegrationPrompt(XSH.env)
+if not _skip_alias:
+    XSH.aliases["print_link"] = utils.write_osc_hyperlink_alias

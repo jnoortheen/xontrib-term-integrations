@@ -127,6 +127,7 @@ if not _skip_all:
 
     if not _skip_alias:
         XSH.aliases["set_wezterm_user_var"] = utils.set_wezterm_user_var_alias
+        XSH.aliases["print_link"] = utils.write_osc_hyperlink_alias
 
     prompt_name = ["PROMPT", "RIGHT_PROMPT", "BOTTOM_TOOLBAR", "MULTILINE_PROMPT"]
     extend = False if _skip_zone else True
